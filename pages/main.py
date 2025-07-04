@@ -10,11 +10,12 @@ import torch
 from rdkit import Chem
 from config import args
 from dataloader import MMPKPredictLoader
-from mmpk import MMPKPredictor
+from model import MMPKPredictor
 from utils import back_transform_predict, seed_everything, standardize
 from predict import test, TASKS
 from attention import show_mol_svg, show_cbar_svg, show_sub_svg, svg_to_data_uri
 from curve import simulate_pk_curve, plotly_pk_curve
+from streamlit.web.server.websocket_headers import _get_websocket_headers
 
 def load_single_example():
     st.session_state['single_smi_input'] = 'C[C@]12C[C@H](c3ccc(S(C)(=O)=O)cc3)C3=C4CCC(=O)C=C4CC[C@H]3[C@@H]1CC[C@@]2(O)C(F)(F)C(F)(F)F'
@@ -71,7 +72,7 @@ st.header('MMPK')
 
 input_mode = st.selectbox(
     '**Select a Method to Enter Molecules:**',
-    ['Single SMILES', 'Batch SMILES', 'Draw Molecule', 'Upload File']
+    ['Draw Molecule', 'Single SMILES', 'Batch SMILES', 'Upload File']
 )
 
 if input_mode == 'Single SMILES':
@@ -191,7 +192,7 @@ elif input_mode == 'Batch SMILES':
         smi_list = [s.strip() for s in re.split(r'[\n,]+', smi_text) if s.strip()]
         doses_str = [s.strip() for s in re.split(r'[\n,]+', dose_text) if s.strip()]
         doses = [float(d) for d in doses_str]
-        
+
         if len(smi_list) > 100 or len(doses) > 100:
             st.warning('⚠️ A maximum of 100 SMILES–dose combinations is allowed. Please reduce your input.')
             smi_list, doses = [], []
@@ -262,6 +263,8 @@ elif input_mode == 'Upload File':
             csv=eg_csv,
             file_name='example.csv'
         )
+
+st.markdown("""<div style='margin-top: 30px;'></div>""", unsafe_allow_html=True)
 
 if st.button('Submit', type='primary'):
     log_submit_event()
@@ -428,7 +431,8 @@ if st.button('Submit', type='primary'):
                             with col_c:
                                 st.image(cbar_svg)
                 with tab3:
-                    st.info('📌 **Note:** The simulated plasma concentration–time curves are based on the assumption of **one-compartment model with first-order absorption and elimination** (See the **[Documentation](/documentation)** for details). Red diamond, circle, and star markers on the curve indicate the absorption half-life, Tmax, and elimination half-life, respectively.')
+                    st.warning('🚧 **Disclaimer:** The simulated plasma concentration–time curves are for reference only and may not be valid for all compounds, especially those with complex or non-linear PK behavior. And these results should not be interpreted as clinical trial results.')
+                    st.info('📌 **Note:** Red diamond, circle, and star markers on the curve indicate the absorption half-life, Tmax, and elimination half-life, respectively.')
                     
                     for i, (smi, group) in enumerate(pred_df.groupby('SMILES', sort=False)):
                         curves = []
