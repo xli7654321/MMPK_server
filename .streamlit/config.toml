@@ -5,12 +5,12 @@
 # If set, the server will only be accessible from this address, and not from
 # any aliases (like localhost).
 # Default: (unset)
-address = "0.0.0.0"
+# address = "0.0.0.0"
 
 # The port where the server will listen for browser connections.
 # Don't use port 3000 which is reserved for internal development.
 # Default: 8501
-port = 8503
+# port = 8503
 
 # The base path for the URL where Streamlit should be served from.
 # This is useful when deploying Streamlit behind a reverse proxy such as Nginx or Apache,
@@ -20,11 +20,11 @@ port = 8503
 #   If baseUrlPath = "yourapp", the app will be served at http://yourdomain.com/yourapp/
 #
 # Default: "" (the app is served from the root, e.g., http://localhost:8501/)
-baseUrlPath = "mmpk"
+# baseUrlPath = "mmpk"
 
-headless = true
-enableCORS = false
-enableXsrfProtection = false
+# headless = true
+# enableCORS = false
+# enableXsrfProtection = false
 
 # Max size, in MB, for files uploaded with the file_uploader.
 # Default: 200
@@ -44,7 +44,7 @@ enableStaticServing = true
 # - Show the URL on the terminal
 # - Open the browser
 # Default: "localhost"
-serverAddress = "10.0.0.247"
+# serverAddress = "10.0.0.247"
 
 # Port where users should point their browsers in order to connect to the
 # app.
@@ -56,7 +56,7 @@ serverAddress = "10.0.0.247"
 # `server.Port` instead. Don't use port 3000 which is reserved for internal
 # development.
 # Default: whatever value is set in server.port.
-serverPort = 80
+# serverPort = 80
 
 [theme]
 primaryColor="#FF4B4B"
