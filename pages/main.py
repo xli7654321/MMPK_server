@@ -10,7 +10,7 @@ import torch
 from rdkit import Chem
 from config import args
 from dataloader import MMPKPredictLoader
-from model import MMPKPredictor
+from mmpk import MMPKPredictor
 from utils import back_transform_predict, seed_everything, standardize
 from predict import test, TASKS
 from attention import show_mol_svg, show_cbar_svg, show_sub_svg, svg_to_data_uri
