@@ -1,0 +1,76 @@
+[server]
+
+# The address where the server will listen for client and browser
+# connections. Use this if you want to bind the server to a specific address.
+# If set, the server will only be accessible from this address, and not from
+# any aliases (like localhost).
+# Default: (unset)
+# address = "0.0.0.0"
+
+# The port where the server will listen for browser connections.
+# Don't use port 3000 which is reserved for internal development.
+# Default: 8501
+# port = 8503
+
+# The base path for the URL where Streamlit should be served from.
+# This is useful when deploying Streamlit behind a reverse proxy such as Nginx or Apache,
+# and the app is not mounted at the root URL.
+#
+# For example:
+#   If baseUrlPath = "yourapp", the app will be served at http://yourdomain.com/yourapp/
+#
+# Default: "" (the app is served from the root, e.g., http://localhost:8501/)
+# baseUrlPath = "mmpk"
+
+# headless = true
+# enableCORS = false
+# enableXsrfProtection = false
+
+# Max size, in MB, for files uploaded with the file_uploader.
+# Default: 200
+maxUploadSize = 50
+
+# Enable serving files from a `static` directory in the running app's
+# directory.
+# Default: false
+enableStaticServing = true
+
+[browser]
+
+# Internet address where users should point their browsers in order to
+# connect to the app. Can be IP address or DNS name and path.
+# This is used to:
+# - Set the correct URL for CORS and XSRF protection purposes.
+# - Show the URL on the terminal
+# - Open the browser
+# Default: "localhost"
+# serverAddress = "10.0.0.247"
+
+# Port where users should point their browsers in order to connect to the
+# app.
+# This is used to:
+# - Set the correct URL for XSRF protection purposes.
+# - Show the URL on the terminal (part of `streamlit run`).
+# - Open the browser automatically (part of `streamlit run`).
+# This option is for advanced use cases. To change the port of your app, use
+# `server.Port` instead. Don't use port 3000 which is reserved for internal
+# development.
+# Default: whatever value is set in server.port.
+# serverPort = 80
+
+[theme]
+primaryColor="#FF4B4B"
+backgroundColor="white"
+secondaryBackgroundColor="#F7F9FB"
+textColor="#31333F"
+
+font = "MyFont, sans-serif"
+baseFontSize = 18
+showWidgetBorder = true
+showSidebarBorder = true
+
+[[theme.fontFaces]]
+family = "MyFont"
+url = "app/static/ProximaSoft-Regular.woff2"
+weight = 400
+style = "normal"
