@@ -58,11 +58,6 @@ def download_csv_btn(label: str, csv: bytes, file_name: str, mime='text/csv'):
         mime=mime,
     )
 
-def log_submit_event():
-    with open('submit_log.txt', 'a') as f:
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"[Submit] {timestamp}\n")
-
 st.set_page_config(
     page_title='PK Prediction',
     layout='wide'
@@ -267,7 +262,6 @@ elif input_mode == 'Upload File':
 st.markdown("""<div style='margin-top: 30px;'></div>""", unsafe_allow_html=True)
 
 if st.button('Submit', type='primary'):
-    log_submit_event()
     if 'smi_list' not in locals() or 'doses' not in locals():
         st.error('❌ Please provide input or upload a file.')
     elif not smi_list or not doses or len(smi_list) != len(doses):
@@ -422,14 +416,14 @@ if st.button('Submit', type='primary'):
                                     )
                                 }
                             )
-                            col_m, col_c, spacer = st.columns([5, 1, 12], vertical_alignment='center')
-                            with col_m:
-                                if mol_svg is not None:
+                            if mol_svg is not None:
+                                col_m, col_c, spacer = st.columns([5, 1, 12], vertical_alignment='center')
+                                with col_m:
                                     st.image(mol_svg, caption='Top-scoring substructure')
-                                else:
-                                    st.warning('⚠️ Unable to highlight the top-scoring substructure.')
-                            with col_c:
-                                st.image(cbar_svg)
+                                with col_c:
+                                    st.image(cbar_svg)
+                            else:
+                                st.warning('⚠️ Unable to highlight the top-scoring substructure.')
                 with tab3:
                     st.warning('🚧 **Disclaimer:** The simulated plasma concentration–time curves are for reference only and may not be valid for all compounds, especially those with complex or non-linear PK behavior.')
                     st.info('📌 **Note:** Red diamond, circle, and star markers on the curve indicate the absorption half-life, Tmax, and elimination half-life, respectively.')

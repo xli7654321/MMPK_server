@@ -9,45 +9,53 @@ import matplotlib.colors as mcolors
 from rdkit.Chem.Draw import rdMolDraw2D
 
 def show_mol_svg(smi, sub_smi, score, size=(500, 500), cmap_name='YlOrRd'):
-    mol = Chem.MolFromSmiles(smi)
-    sub_clean = re.sub(r'\(\[\d+\*\]\)', '', sub_smi)
-    sub_clean = re.sub(r'\[\d+\*\]', '', sub_clean)
-    frag = Chem.MolFromSmiles(sub_clean)
+    try:
+        mol = Chem.MolFromSmiles(smi)
+        sub_clean = re.sub(r'\(\[\d+\*\]\)', '', sub_smi)
+        sub_clean = re.sub(r'\[\d+\*\]', '', sub_clean)
+        frag = Chem.MolFromSmiles(sub_clean)
 
-    matches = mol.GetSubstructMatches(frag)
-    if not matches:
+        if mol is None or frag is None:
+            return None
+
+        matches = mol.GetSubstructMatches(frag)
+        if not matches:
+            return None
+
+        highlight_atoms = list(matches[0])
+    
+        vmin, vmax = 0, 1
+        norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+        cmap = cm.get_cmap(cmap_name)
+    
+        highlight_colors = {idx: cmap(norm(score))[:3] for idx in highlight_atoms}
+    
+        drawer = rdMolDraw2D.MolDraw2DSVG(*size)  # (width, height)
+        opts = drawer.drawOptions()
+        opts.useBWAtomPalette()
+        opts.bondLineWidth = 3
+        opts.highlightBondWidthMultiplier = 6
+        opts.highlightRadius = 0.35
+        opts.padding = 0.05
+        opts.fixedFontSize = 20
+        opts.rotate = 0
+        opts.addAtomIndices = False
+        # opts.annotationFontScale = 0.6
+        opts.fontFile = 'static/ProximaSoft-Medium.ttf'
+    
+        drawer.DrawMolecule(
+            mol,
+            highlightAtoms=highlight_atoms,
+            highlightAtomColors=highlight_colors
+        )
+        drawer.FinishDrawing()
+        mol_svg = drawer.GetDrawingText()
+    
+        return mol_svg
+    
+    except Exception as e:
+        print(f"Error in show_mol_svg: {e}")
         return None
-
-    highlight_atoms = list(matches[0])
-    
-    vmin, vmax = 0, 1
-    norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
-    cmap = cm.get_cmap(cmap_name)
-    
-    highlight_colors = {idx: cmap(norm(score))[:3] for idx in highlight_atoms}
-    
-    drawer = rdMolDraw2D.MolDraw2DSVG(*size)  # (width, height)
-    opts = drawer.drawOptions()
-    opts.useBWAtomPalette()
-    opts.bondLineWidth = 3
-    opts.highlightBondWidthMultiplier = 6
-    opts.highlightRadius = 0.35
-    opts.padding = 0.05
-    opts.fixedFontSize = 20
-    opts.rotate = 0
-    opts.addAtomIndices = False
-    # opts.annotationFontScale = 0.6
-    opts.fontFile = 'static/ProximaSoft-Medium.ttf'
-    
-    drawer.DrawMolecule(
-        mol,
-        highlightAtoms=highlight_atoms,
-        highlightAtomColors=highlight_colors
-    )
-    drawer.FinishDrawing()
-    mol_svg = drawer.GetDrawingText()
-    
-    return mol_svg
 
 def show_cbar_svg(cmap_name='YlOrRd', figsize=(0.3, 6)):
     vmin, vmax = 0, 1
